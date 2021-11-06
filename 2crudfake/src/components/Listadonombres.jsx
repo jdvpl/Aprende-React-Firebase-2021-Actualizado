@@ -22,6 +22,12 @@ const Listadonombres = () => {
             data:nombre
         }
         setlistanombres([...listanombres,nuevoNombre])
+        setnombre("")
+    }
+
+    const deleteName=(id)=>{
+        const newArray=listanombres.filter(item=>item.id !== id)
+        setlistanombres(newArray)
     }
 
 
@@ -31,12 +37,18 @@ const Listadonombres = () => {
             <div className="row">
                 <div className="col-md-6">
                     <h2>Listado de nombres</h2>
+                    <ul className="list-group">
+                        {listanombres.map(item=>
+                            <li key={item.id} className="list-group-item">{item.data}
+                            <button className="btn btn-danger float-end" onClick={()=>deleteName(item.id)}>Eliminar</button>
+                            </li>)}
+                    </ul>
                 </div>
                 <div className="col-md-6">
                     <h2>Formulario</h2>
                     {error ? <div className="alert alert-danger">Por favor colocar un nombre</div>:null}
                     <form className="form-group" onSubmit={(e)=>addName(e)}>
-                        <input type="text" name="" id="" placeholder="Nombre" className="form-control mb-3" onChange={(e)=>{setnombre(e.target.value)}}/>
+                        <input type="text" name="" id="" value={nombre} placeholder="Nombre" className="form-control mb-3" onChange={(e)=>{setnombre(e.target.value)}}/>
                         <input type="submit" value="Registrar" className="btn btn-outline-success btn-block" />
                     </form>
                 </div>
