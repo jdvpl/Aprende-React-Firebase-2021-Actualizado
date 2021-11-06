@@ -1,33 +1,55 @@
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import uniqid from 'uniqid'
 
 const Listadonombres = () => {
 
-    const [nombre,setnombre]=useState("");
+    const [nombre, setnombre] = useState("");
     const [listanombres, setlistanombres] = useState([]);
     const [error, seterror] = useState(false);
+    const [editar, seteditar] = useState(false)
+    const [iditem, setid] = useState("")
 
-    const addName=(e)=>{
+    const addName = (e) => {
         e.preventDefault();
 
-        if(!nombre.trim()){
+        if (!nombre.trim()) {
             seterror(true);
             return;
-        }else{
+        } else {
             seterror(false);
 
         }
-        const nuevoNombre={
-            id:uniqid(),
-            data:nombre
+        const nuevoNombre = {
+            id: uniqid(),
+            data: nombre
         }
-        setlistanombres([...listanombres,nuevoNombre])
+        setlistanombres([...listanombres, nuevoNombre])
         setnombre("")
     }
 
-    const deleteName=(id)=>{
-        const newArray=listanombres.filter(item=>item.id !== id)
+    const deleteName = (id) => {
+        const newArray = listanombres.filter(item => item.id !== id)
         setlistanombres(newArray)
+    }
+
+    const editarFunc = (item) => {
+        seteditar(true)
+        setnombre(item.data)
+        setid(item.id)
+    }
+    const editarNombre =(e)=>{
+        e.preventDefault();
+        if (!nombre.trim()) {
+            seterror(true);
+            return;
+        } else {
+            seterror(false);
+
+        }
+        const nuevoArary=listanombres.map(item => item.id === iditem ? {id:iditem, data:nombre}:item)
+        setlistanombres(nuevoArary)
+        setnombre("")
+        seteditar(false)
     }
 
 
@@ -38,18 +60,30 @@ const Listadonombres = () => {
                 <div className="col-md-6">
                     <h2>Listado de nombres</h2>
                     <ul className="list-group">
-                        {listanombres.map(item=>
+                        {listanombres.map(item =>
                             <li key={item.id} className="list-group-item">{item.data}
-                            <button className="btn btn-danger float-end" onClick={()=>deleteName(item.id)}>Eliminar</button>
+
+                                <button className="btn btn-danger float-end" onClick={() => deleteName(item.id)}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                    <path fillRule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                </svg></button>
+
+                                <button className="btn btn-success float-end me-3" onClick={()=>editarFunc(item)}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg></button>
                             </li>)}
                     </ul>
                 </div>
                 <div className="col-md-6">
                     <h2>Formulario</h2>
-                    {error ? <div className="alert alert-danger">Por favor colocar un nombre</div>:null}
-                    <form className="form-group" onSubmit={(e)=>addName(e)}>
-                        <input type="text" name="" id="" value={nombre} placeholder="Nombre" className="form-control mb-3" onChange={(e)=>{setnombre(e.target.value)}}/>
-                        <input type="submit" value="Registrar" className="btn btn-outline-success btn-block" />
+                    {error ? <div className="alert alert-danger">Por favor colocar un nombre</div> : null}
+                    <form className="form-group" onSubmit={editar? editarNombre :(e) => addName(e)}>
+                        <input type="text" name="" id="" value={nombre} placeholder="Nombre" className="form-control mb-3" onChange={(e) => { setnombre(e.target.value) }} />
+
+                        <div className="d-grid gap-2">
+                            <input type="submit" value={editar?"Actualizar":"Añadir"} className="btn btn-outline-success btn-block" />
+                        </div>
                     </form>
                 </div>
             </div>
