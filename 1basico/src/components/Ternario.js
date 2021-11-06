@@ -11,11 +11,11 @@ const Ternario = () => {
     settemp(temp-1)
   }
   return (
-    <div>
+    <div className="container">
       <h2>Tempetatura {temp}</h2>
       <p>{temp >21 ? "Hace calor" : "Hacer frio"}</p>
-      <button onClick={subir}>Aumentar temp</button>
-      <button onClick={bajar}>Reducir temp</button>
+      <button onClick={subir} className="btn btn-success">Aumentar temp</button>
+      <button onClick={bajar} className="btn btn-danger ms-5">Reducir temp</button>
     </div>
   )
 }
